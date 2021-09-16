@@ -12,25 +12,24 @@ import java.util.List;
  *
  * @author tatia
  */
-public class PersonDto implements Serializable{
-    
-    private String identification;
-    
-    private String name;
-    
-    private String lastName;
-    
-    private String age;
-    
-    private String email;
-    
-    private String phoneNumber;
-    
-    private String ocupation;
-    
-    private List<String> certificationsList; 
+public class PersonDto implements Serializable {
 
-    
+    private String identification;
+
+    private String name;
+
+    private String lastName;
+
+    private String age;
+
+    private String email;
+
+    private String phoneNumber;
+
+    private String ocupation;
+
+    private List<String> certificationsList;
+
     public PersonDto() {
     }
 
@@ -112,18 +111,5 @@ public class PersonDto implements Serializable{
     public void savePerson(PersonDto person) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
 }
