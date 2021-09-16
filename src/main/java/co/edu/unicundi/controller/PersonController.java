@@ -28,18 +28,13 @@ public class PersonController {
     @GET
     @Path("/obtenerPersonas")
     @Produces(MediaType.APPLICATION_JSON)
-    public PersonDto getPersons() {
+    public List<PersonDto> getPersons() {
 
-        List<String> certifications = new ArrayList<>();
+        PersonList objPersonList = new PersonList();
+        
+        List<PersonDto> personList = objPersonList.getPersons();
 
-        certifications.add("Firebase");
-        certifications.add("Scrum study");
-        certifications.add("Java EE");
-
-        PersonDto person = new PersonDto("1073178607", "Selena", "Gomez", "27", 
-                "sgomez@gmail.com", "3118293755", "Desarrolladora", certifications);
-
-        return person;
+        return personList;
     }
 
     @POST
