@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package co.edu.unicundi.logic;
+package co.edu.unicundi.service;
 
 import co.edu.unicundi.dto.PersonDto;
 import jakarta.validation.Valid;
@@ -16,28 +16,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Clase 
+ * Clase
  *
  * @author Tatiana Ramos Villanueva
  * @author Nicolás Nieto Cárdenas
  * @version 1.1.0
  * @since 1.0.0
  */
-public class PersonList {
+public class PersonService {
 
+    /**
+     *
+     */
     public static final String DATA_FILE = "data.txt";
 
+    /**
+     *
+     */
     private List<PersonDto> personList;
 
-    public PersonList() {
+    /**
+     *
+     */
+    public PersonService() {
         this.personList = new ArrayList<>();
         loadList();
     }
 
+    /**
+     *
+     * @return
+     */
     public List<PersonDto> getPersons() {
         return this.personList;
     }
 
+    /**
+     *
+     * @param identification
+     * @return
+     */
     public PersonDto getPersonByIdentification(String identification) {
 
         for (@Valid PersonDto person : this.personList) {
@@ -48,6 +66,11 @@ public class PersonList {
         return null;
     }
 
+    /**
+     *
+     * @param personDto
+     * @return
+     */
     public boolean savePerson(@Valid PersonDto personDto) {
 
         for (PersonDto p : this.personList) {
@@ -61,6 +84,12 @@ public class PersonList {
         return true;
     }
 
+    /**
+     *
+     * @param identification
+     * @param person
+     * @return
+     */
     public PersonDto updatePerson(String identification, PersonDto person) {
 
         for (int index = 0; index < this.personList.size(); index++) {
@@ -75,6 +104,11 @@ public class PersonList {
         return null;
     }
 
+    /**
+     *
+     * @param identification
+     * @return
+     */
     public boolean deletePerson(String identification) {
 
         for (PersonDto p : this.personList) {
@@ -87,6 +121,9 @@ public class PersonList {
         return false;
     }
 
+    /**
+     *
+     */
     public final void loadList() {
         ObjectInputStream objStream = null;
 
@@ -105,11 +142,20 @@ public class PersonList {
         }
     }
 
+    /**
+     *
+     * @param fileName
+     * @return
+     */
     public boolean isFileExists(String fileName) {
         File file = new File(fileName);
         return file.exists();
     }
 
+    /**
+     *
+     * @return
+     */
     public final boolean saveList() {
 
         ObjectOutputStream objStream = null;

@@ -6,10 +6,11 @@
 package co.edu.unicundi.controller;
 
 import co.edu.unicundi.dto.PersonDto;
-import co.edu.unicundi.logic.PersonList;
-import jakarta.validation.Valid;
+import co.edu.unicundi.service.PersonService;
+import java.util.HashMap;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.validation.ConstraintViolation;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -23,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Clase 
+ * Clase
  *
  * @author Tatiana Ramos Villanueva
  * @author Nicolás Nieto Cárdenas
@@ -34,7 +35,7 @@ import javax.ws.rs.core.Response;
 @Path("/personas")
 public class PersonController {
 
-    PersonList objPersonList = new PersonList();
+    PersonService objPersonList = new PersonService();
 
     @GET
     @Path("/obtener")
@@ -69,7 +70,16 @@ public class PersonController {
     @Path("/insertar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addPerson(@Valid PersonDto person) {
+    public Response addPerson(PersonDto person) {
+
+        HashMap<String, String> errores = new HashMap<>();
+        for (ConstraintViolation error : person.validate()) {
+            errores.put(error.getPropertyPath().toString(), error.getMessage());
+        }
+
+        if (errores.size() > 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(errores).build();
+        }
 
         if (objPersonList.savePerson(person)) {
             return Response.status(Response.Status.CREATED).entity(person).build();
@@ -77,16 +87,22 @@ public class PersonController {
             return Response.status(Response.Status.CONFLICT).entity("" + "{\n"
                     + "\"Mensaje\": \"Ya existe una persona con la misma identificación\"\n" + "}").build();
         }
+
     }
 
     @PUT
     @Path("/editarPorId/{identification}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePerson(@PathParam("identification") @NotNull String id,
-            @Valid PersonDto editPerson) {
+    public Response updatePerson(@PathParam("identification") String id,
+            PersonDto editPerson) {
 
-        @Valid PersonDto person = objPersonList.updatePerson(id, editPerson);
+        PersonDto person = (PersonDto) objPersonList.updatePerson(id, editPerson);
+
+        HashMap<String, String> errores = new HashMap<>();
+        for (ConstraintViolation error : editPerson.validate()) {
+            errores.put(error.getPropertyPath().toString(), error.getMessage());
+        }
 
         if (person == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("" + "{\n"
@@ -94,9 +110,12 @@ public class PersonController {
         } else if (person != editPerson) {
             return Response.status(Response.Status.CONFLICT).entity("" + "{\n"
                     + "\"Mensaje\": \"Ya existe una persona con la misma identificación\"\n" + "}").build();
+        } else if (errores.size() > 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(errores).build();
         } else {
             return Response.status(Response.Status.OK).entity(editPerson).build();
         }
+
     }
 
     @DELETE
