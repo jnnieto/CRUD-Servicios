@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package co.edu.unicundi.model;
+package co.edu.unicundi.logic;
 
 import co.edu.unicundi.dto.PersonDto;
+import jakarta.validation.Valid;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,8 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Clase 
  *
- * @author tatia
+ * @author Tatiana Ramos Villanueva
+ * @author Nicolás Nieto Cárdenas
+ * @version 1.1.0
+ * @since 1.0.0
  */
 public class PersonList {
 
@@ -35,7 +40,7 @@ public class PersonList {
 
     public PersonDto getPersonByIdentification(String identification) {
 
-        for (PersonDto person : this.personList) {
+        for (@Valid PersonDto person : this.personList) {
             if (person.getIdentification().equals(identification)) {
                 return person;
             }
@@ -43,7 +48,7 @@ public class PersonList {
         return null;
     }
 
-    public boolean savePerson(PersonDto personDto) {
+    public boolean savePerson(@Valid PersonDto personDto) {
 
         for (PersonDto p : this.personList) {
 

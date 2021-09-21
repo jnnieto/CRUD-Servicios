@@ -5,27 +5,45 @@
  */
 package co.edu.unicundi.dto;
 
+import jakarta.validation.constraints.Email;
 import java.io.Serializable;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
+ * Clase
  *
- * @author tatia
+ * @author Tatiana Ramos Villanueva
+ * @author Nicolás Nieto Cárdenas
+ * @version 1.1.0
+ * @since 1.0.0
  */
 public class PersonDto implements Serializable {
 
+    @NotNull
+    @Size(min = 6, max = 12)
     private String identification;
 
+    @NotNull(message = "Nombre vacío")
     private String name;
 
+    @NotNull
     private String lastName;
 
+    @NotNull
+    @Size(min = 1, max = 3)
     private String age;
 
+    @NotNull
+    @Email
     private String email;
 
+    @NotNull
+    @Size(min = 7, max = 10)
     private String phoneNumber;
 
+    @NotNull
     private String ocupation;
 
     private List<String> certificationsList;
@@ -106,10 +124,6 @@ public class PersonDto implements Serializable {
 
     public void setCertificationsList(List<String> certificationsList) {
         this.certificationsList = certificationsList;
-    }
-
-    public void savePerson(PersonDto person) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

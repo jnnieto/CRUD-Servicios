@@ -6,9 +6,11 @@
 package co.edu.unicundi.controller;
 
 import co.edu.unicundi.dto.PersonDto;
-import co.edu.unicundi.model.PersonList;
+import co.edu.unicundi.logic.PersonList;
+import jakarta.validation.Valid;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -21,8 +23,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
+ * Clase 
  *
- * @author nicon
+ * @author Tatiana Ramos Villanueva
+ * @author Nicolás Nieto Cárdenas
+ * @version 1.1.0
+ * @since 1.0.0
  */
 @Stateless
 @Path("/personas")
@@ -63,7 +69,7 @@ public class PersonController {
     @Path("/insertar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addPerson(PersonDto person) {
+    public Response addPerson(@Valid PersonDto person) {
 
         if (objPersonList.savePerson(person)) {
             return Response.status(Response.Status.CREATED).entity(person).build();
@@ -77,10 +83,10 @@ public class PersonController {
     @Path("/editarPorId/{identification}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePerson(@PathParam("identification") String id,
-            PersonDto editPerson) {
+    public Response updatePerson(@PathParam("identification") @NotNull String id,
+            @Valid PersonDto editPerson) {
 
-        PersonDto person = objPersonList.updatePerson(id, editPerson);
+        @Valid PersonDto person = objPersonList.updatePerson(id, editPerson);
 
         if (person == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("" + "{\n"
@@ -96,7 +102,7 @@ public class PersonController {
     @DELETE
     @Path("/eliminarPorId/{identification}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePerson(@PathParam("identification") String id) {
+    public Response deletePerson(@PathParam("identification") @NotNull String id) {
 
         if (objPersonList.deletePerson(id)) {
             return Response.status(Response.Status.OK).entity("" + "{\n"
