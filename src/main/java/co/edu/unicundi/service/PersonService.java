@@ -13,7 +13,9 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import javax.validation.ConstraintViolation;
 
 /**
  * Clase
@@ -73,7 +75,7 @@ public class PersonService {
      */
     public boolean savePerson(@Valid PersonDto personDto) {
 
-        for (PersonDto p : this.personList) {
+        for (PersonDto p: this.personList) {
 
             if (p.getIdentification().equals(personDto.getIdentification())) {
                 return false;
@@ -96,6 +98,12 @@ public class PersonService {
 
             if (this.personList.get(index).getIdentification().equals(identification)) {
 
+                for (PersonDto p: this.personList) {
+                    if (p.getIdentification().equals(person.getIdentification())) {
+                        return p;
+                    }
+                }
+    
                 this.personList.set(index, person);
                 saveList();
                 return person;
@@ -178,4 +186,17 @@ public class PersonService {
         }
     }
 
+    /**
+     * 
+     * @param person
+     * @return 
+     */
+    public HashMap<String, String> error(PersonDto person) {
+        HashMap<String, String> errores = new HashMap<>();
+        for (ConstraintViolation error : person.validate()) {
+            errores.put(error.getPropertyPath().toString(), error.getMessage());
+        }
+        return errores;
+    }
+    
 }

@@ -6,11 +6,12 @@
 package co.edu.unicundi.controller;
 
 import co.edu.unicundi.dto.PersonDto;
+import co.edu.unicundi.message.HandlerWrapper;
+import co.edu.unicundi.message.MessageWrapper;
 import co.edu.unicundi.service.PersonService;
 import java.util.HashMap;
 import java.util.List;
 import javax.ejb.Stateless;
-import javax.validation.ConstraintViolation;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -36,6 +37,8 @@ import javax.ws.rs.core.Response;
 public class PersonController {
 
     PersonService objPersonList = new PersonService();
+    MessageWrapper msg = new MessageWrapper();
+    HandlerWrapper handler = new HandlerWrapper();
 
     @GET
     @Path("/obtener")
@@ -59,8 +62,9 @@ public class PersonController {
         PersonDto person = objPersonList.getPersonByIdentification(id);
 
         if (person == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("" + "{\n"
-                    + "\"Mensaje\": \"Persona no encontrada\"\n" + "}").build();
+            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(), 
+                Response.Status.NOT_FOUND, "personas/obtenerPorId/{identification}");
+            return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
         } else {
             return Response.status(Response.Status.OK).entity(person).build();
         }
@@ -72,11 +76,7 @@ public class PersonController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addPerson(PersonDto person) {
 
-        HashMap<String, String> errores = new HashMap<>();
-        for (ConstraintViolation error : person.validate()) {
-            errores.put(error.getPropertyPath().toString(), error.getMessage());
-        }
-
+        HashMap<String, String> errores = objPersonList.error(person);;
         if (errores.size() > 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity(errores).build();
         }
@@ -84,8 +84,9 @@ public class PersonController {
         if (objPersonList.savePerson(person)) {
             return Response.status(Response.Status.CREATED).entity(person).build();
         } else {
-            return Response.status(Response.Status.CONFLICT).entity("" + "{\n"
-                    + "\"Mensaje\": \"Ya existe una persona con la misma identificación\"\n" + "}").build();
+            msg = handler.toResponse(Response.Status.CONFLICT.getStatusCode(), 
+                Response.Status.CONFLICT, "personas/insertar");
+            return Response.status(Response.Status.CONFLICT).entity(msg).build();
         }
 
     }
@@ -97,21 +98,20 @@ public class PersonController {
     public Response updatePerson(@PathParam("identification") String id,
             PersonDto editPerson) {
 
-        PersonDto person = (PersonDto) objPersonList.updatePerson(id, editPerson);
-
-        HashMap<String, String> errores = new HashMap<>();
-        for (ConstraintViolation error : editPerson.validate()) {
-            errores.put(error.getPropertyPath().toString(), error.getMessage());
-        }
-
-        if (person == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("" + "{\n"
-                    + "\"Mensaje\": \"Persona no encontrada\"\n" + "}").build();
-        } else if (person != editPerson) {
-            return Response.status(Response.Status.CONFLICT).entity("" + "{\n"
-                    + "\"Mensaje\": \"Ya existe una persona con la misma identificación\"\n" + "}").build();
-        } else if (errores.size() > 0) {
+        HashMap<String, String> errores = objPersonList.error(editPerson);;
+        if (errores.size() > 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity(errores).build();
+        }
+        
+        PersonDto person = (PersonDto) objPersonList.updatePerson(id, editPerson);
+        if (person == null) {
+            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(), 
+                Response.Status.NOT_FOUND, "personas/editarPorId/{identification}");
+            return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
+        } else if (person != editPerson) {
+             msg = handler.toResponse(Response.Status.CONFLICT.getStatusCode(), 
+                Response.Status.CONFLICT, "personas/editarPorId/{identification}");
+            return Response.status(Response.Status.CONFLICT).entity(msg).build();
         } else {
             return Response.status(Response.Status.OK).entity(editPerson).build();
         }
@@ -124,11 +124,13 @@ public class PersonController {
     public Response deletePerson(@PathParam("identification") @NotNull String id) {
 
         if (objPersonList.deletePerson(id)) {
-            return Response.status(Response.Status.OK).entity("" + "{\n"
-                    + "\"Mensaje\": \"La persona se eliminó correctamente\"\n" + "}").build();
+             msg = handler.toResponse(Response.Status.OK.getStatusCode(), 
+                Response.Status.OK, "/eliminarPorId/{identification}");
+            return Response.status(Response.Status.OK).entity(msg).build();
         } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("" + "{\n"
-                    + "\"Mensaje\": \"Persona no encontrada\"\n" + "}").build();
+            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(), 
+                Response.Status.NOT_FOUND, "personas/eliminarPorId/{identification}");
+            return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
         }
 
     }
