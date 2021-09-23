@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.edu.unicundi.service;
 
 import co.edu.unicundi.dto.PersonDto;
@@ -18,8 +13,8 @@ import java.util.List;
 import javax.validation.ConstraintViolation;
 
 /**
- * Clase
- *
+ * Clase que maneja la lógica de los datos solicitados por los servicios
+ * 
  * @author Tatiana Ramos Villanueva
  * @author Nicolás Nieto Cárdenas
  * @version 1.1.0
@@ -28,17 +23,18 @@ import javax.validation.ConstraintViolation;
 public class PersonService {
 
     /**
-     *
+     * Variable estática que guarda el nombre del archivo que contiene las personas
      */
     public static final String DATA_FILE = "data.txt";
 
     /**
-     *
+     * Lista de tipo PersonDto que almacena la lista de personas leidas y escritas en el archivo
      */
     private List<PersonDto> personList;
 
     /**
-     *
+     * Constructor de la clase PersonService que inicializa la lista de personas
+     * y cargar la lista del archivo de texto
      */
     public PersonService() {
         this.personList = new ArrayList<>();
@@ -46,21 +42,22 @@ public class PersonService {
     }
 
     /**
-     *
-     * @return
+     * Método que retorna la lista de personas que están en el archivo de texto
+     * @return la lista de personas
      */
     public List<PersonDto> getPersons() {
         return this.personList;
     }
 
     /**
-     *
-     * @param identification
-     * @return
+     * Método de tipo PersonDto que obtiene la información de una persona por medio
+     * de su identificación
+     * @param identification la identificación de la persona
+     * @return el objeto PersonDto con los datos de la persona con esa identificación
      */
     public PersonDto getPersonByIdentification(String identification) {
 
-        for (@Valid PersonDto person : this.personList) {
+        for (PersonDto person : this.personList) {
             if (person.getIdentification().equals(identification)) {
                 return person;
             }
@@ -69,11 +66,12 @@ public class PersonService {
     }
 
     /**
-     *
-     * @param personDto
-     * @return
+     * Método de tipo booleano que añade a una nueva persona a la lista
+     * y la guarda en el archivo de texto
+     * @param personDto el objeto de la nueva persona a agregar
+     * @return true si la persona se guardó, false si la identificación ya existe
      */
-    public boolean savePerson(@Valid PersonDto personDto) {
+    public boolean savePerson(PersonDto personDto) {
 
         for (PersonDto p: this.personList) {
 
@@ -87,10 +85,13 @@ public class PersonService {
     }
 
     /**
-     *
-     * @param identification
-     * @param person
-     * @return
+     * Método de tipo PersonDto que actualiza la información de una persona que
+     * se encuentra en la lista
+     * @param identification la identificación de la persona
+     * @param person la persona a editar
+     * @return person la persona sise editó correctamente
+     * p si existe una identificación con otra persona
+     * null si la persona no existe
      */
     public PersonDto updatePerson(String identification, PersonDto person) {
 
@@ -99,7 +100,7 @@ public class PersonService {
             if (this.personList.get(index).getIdentification().equals(identification)) {
 
                 for (PersonDto p: this.personList) {
-                    if (p.getIdentification().equals(person.getIdentification())) {
+                    if (p.getIdentification().equals(person.getIdentification()) && !person.getIdentification().equals(identification)) {
                         return p;
                     }
                 }
@@ -113,9 +114,10 @@ public class PersonService {
     }
 
     /**
-     *
-     * @param identification
-     * @return
+     * Método de tipo booleano que permite eliminar a una persona
+     * @param identification la identificación de la persona a eliminar
+     * @return true si se eliminó la persona
+     * false si la persona no existe
      */
     public boolean deletePerson(String identification) {
 
@@ -130,7 +132,7 @@ public class PersonService {
     }
 
     /**
-     *
+     * Método que carga la lista de las personas con los datos escritos en el archivo
      */
     public final void loadList() {
         ObjectInputStream objStream = null;
@@ -151,9 +153,9 @@ public class PersonService {
     }
 
     /**
-     *
-     * @param fileName
-     * @return
+     * Método que valida si el archivo a leer o a escribir existe
+     * @param fileName nombre del archivo a validar
+     * @return true o false si el archivo existe
      */
     public boolean isFileExists(String fileName) {
         File file = new File(fileName);
@@ -161,8 +163,9 @@ public class PersonService {
     }
 
     /**
-     *
-     * @return
+     * Método que permite guardar los datos de la lista de la clase en el archivo de texto
+     * @return true si el objeto se guardo en el archivo
+     * false si ocurrió un error en la escritura
      */
     public final boolean saveList() {
 
@@ -187,9 +190,9 @@ public class PersonService {
     }
 
     /**
-     * 
-     * @param person
-     * @return 
+     * Método que permite manejar los errores de los datos de una persona
+     * @param person la persona a validar
+     * @return la lista de errores
      */
     public HashMap<String, String> error(PersonDto person) {
         HashMap<String, String> errores = new HashMap<>();

@@ -1,18 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.edu.unicundi.message;
 
 import javax.ws.rs.core.Response;
 
 /**
+ * Clase que maneja las respuestas proporcionadas por la API
  *
- * @author nicon
+ * @author Tatiana Ramos Villanueva
+ * @author Nicolás Nieto Cárdenas
+ * @version 1.1.0
+ * @since 1.0.0
  */
 public class HandlerWrapper {
     
+    /**
+     * Método que obtiene el código, estado y url del controlador
+     * y retorna la envoltura que se enviará como respuesta
+     * @param code el código de la respuesta
+     * @param status el estado de la repuesta
+     * @param url la url del servicio
+     * @return la envoltura que se enviará como respuesta
+     */
     public MessageWrapper toResponse(int code, Response.Status status, String url) {
         
         MessageWrapper msg = new MessageWrapper();

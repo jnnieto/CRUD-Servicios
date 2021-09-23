@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.edu.unicundi.controller;
 
 import co.edu.unicundi.dto.PersonDto;
@@ -12,7 +7,8 @@ import co.edu.unicundi.service.PersonService;
 import java.util.HashMap;
 import java.util.List;
 import javax.ejb.Stateless;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -57,7 +53,7 @@ public class PersonController {
     @GET
     @Path("/obtenerPorId/{identification}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPersonsById(@PathParam("identification") String id) {
+    public Response getPersonsById(@PathParam("identification") @Size(min = 6, max = 12) @Pattern(regexp="^([0-9])*$") String id) {
 
         PersonDto person = objPersonList.getPersonByIdentification(id);
 
@@ -95,7 +91,7 @@ public class PersonController {
     @Path("/editarPorId/{identification}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePerson(@PathParam("identification") String id,
+    public Response updatePerson(@PathParam("identification") @Size(min = 6, max = 12) @Pattern(regexp="^([0-9])*$") String id,
             PersonDto editPerson) {
 
         HashMap<String, String> errores = objPersonList.error(editPerson);;
@@ -121,7 +117,7 @@ public class PersonController {
     @DELETE
     @Path("/eliminarPorId/{identification}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePerson(@PathParam("identification") @NotNull String id) {
+    public Response deletePerson(@PathParam("identification") @Size(min = 6, max = 12) @Pattern(regexp="^([0-9])*$") String id) {
 
         if (objPersonList.deletePerson(id)) {
              msg = handler.toResponse(Response.Status.OK.getStatusCode(), 
