@@ -21,7 +21,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Clase
  *
  * @author Tatiana Ramos Villanueva
  * @author Nicolás Nieto Cárdenas
@@ -53,13 +52,14 @@ public class PersonController {
     @GET
     @Path("/obtenerPorId/{identification}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPersonsById(@PathParam("identification") @Size(min = 6, max = 12) @Pattern(regexp="^([0-9])*$") String id) {
+    public Response getPersonsById(@PathParam("identification") @Size(min = 6, max = 12)
+                                    @Pattern(regexp = "^([0-9])*$") String id) {
 
         PersonDto person = objPersonList.getPersonByIdentification(id);
 
         if (person == null) {
-            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(), 
-                Response.Status.NOT_FOUND, "personas/obtenerPorId/{identification}");
+            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(),
+                    Response.Status.NOT_FOUND, "personas/obtenerPorId/{identification}");
             return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
         } else {
             return Response.status(Response.Status.OK).entity(person).build();
@@ -80,8 +80,8 @@ public class PersonController {
         if (objPersonList.savePerson(person)) {
             return Response.status(Response.Status.CREATED).entity(person).build();
         } else {
-            msg = handler.toResponse(Response.Status.CONFLICT.getStatusCode(), 
-                Response.Status.CONFLICT, "personas/insertar");
+            msg = handler.toResponse(Response.Status.CONFLICT.getStatusCode(),
+                    Response.Status.CONFLICT, "personas/insertar");
             return Response.status(Response.Status.CONFLICT).entity(msg).build();
         }
 
@@ -91,22 +91,22 @@ public class PersonController {
     @Path("/editarPorId/{identification}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePerson(@PathParam("identification") @Size(min = 6, max = 12) @Pattern(regexp="^([0-9])*$") String id,
-            PersonDto editPerson) {
+    public Response updatePerson(@PathParam("identification") @Size(min = 6, max = 12) 
+                                 @Pattern(regexp = "^([0-9])*$") String id, PersonDto editPerson) {
 
         HashMap<String, String> errores = objPersonList.error(editPerson);;
         if (errores.size() > 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity(errores).build();
         }
-        
+
         PersonDto person = (PersonDto) objPersonList.updatePerson(id, editPerson);
         if (person == null) {
-            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(), 
-                Response.Status.NOT_FOUND, "personas/editarPorId/{identification}");
+            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(),
+                    Response.Status.NOT_FOUND, "personas/editarPorId/{identification}");
             return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
         } else if (person != editPerson) {
-             msg = handler.toResponse(Response.Status.CONFLICT.getStatusCode(), 
-                Response.Status.CONFLICT, "personas/editarPorId/{identification}");
+            msg = handler.toResponse(Response.Status.CONFLICT.getStatusCode(),
+                    Response.Status.CONFLICT, "personas/editarPorId/{identification}");
             return Response.status(Response.Status.CONFLICT).entity(msg).build();
         } else {
             return Response.status(Response.Status.OK).entity(editPerson).build();
@@ -117,15 +117,16 @@ public class PersonController {
     @DELETE
     @Path("/eliminarPorId/{identification}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePerson(@PathParam("identification") @Size(min = 6, max = 12) @Pattern(regexp="^([0-9])*$") String id) {
+    public Response deletePerson(@PathParam("identification") @Size(min = 6, max = 12)
+                                  @Pattern(regexp = "^([0-9])*$") String id) {
 
         if (objPersonList.deletePerson(id)) {
-             msg = handler.toResponse(Response.Status.OK.getStatusCode(), 
-                Response.Status.OK, "/eliminarPorId/{identification}");
+            msg = handler.toResponse(Response.Status.OK.getStatusCode(),
+                    Response.Status.OK, "/eliminarPorId/{identification}");
             return Response.status(Response.Status.OK).entity(msg).build();
         } else {
-            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(), 
-                Response.Status.NOT_FOUND, "personas/eliminarPorId/{identification}");
+            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(),
+                    Response.Status.NOT_FOUND, "personas/eliminarPorId/{identification}");
             return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
         }
 
