@@ -1,6 +1,9 @@
 package co.edu.unicundi.service;
 
 import co.edu.unicundi.dto.PersonDto;
+import co.edu.unicundi.exception.ConflictException;
+import co.edu.unicundi.exception.ConstraintException;
+import co.edu.unicundi.exception.PersonNotFoundException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,6 +33,8 @@ public class PersonService {
      * Lista de tipo PersonDto que almacena la lista de personas leidas y escritas en el archivo
      */
     private List<PersonDto> personList;
+    
+    private HashMap<String, String> errores;
 
     /**
      * Constructor de la clase PersonService que inicializa la lista de personas
@@ -43,9 +48,14 @@ public class PersonService {
     /**
      * Método que retorna la lista de personas que están en el archivo de texto
      * @return la lista de personas
+     * @throws java.lang.Exception
      */
-    public List<PersonDto> getPersons() {
-        return this.personList;
+    public List<PersonDto> getPersons() throws Exception {
+        try {
+            return this.personList;
+        } catch (Exception e) {
+            throw new Exception("");
+        }
     }
 
     /**
@@ -53,34 +63,58 @@ public class PersonService {
      * de su identificación
      * @param identification la identificación de la persona
      * @return el objeto PersonDto con los datos de la persona con esa identificación
+     * @throws co.edu.unicundi.exception.PersonNotFoundException
      */
-    public PersonDto getPersonByIdentification(String identification) {
+    public PersonDto getPersonByIdentification(String identification) throws PersonNotFoundException, Exception {
 
-        for (PersonDto person : this.personList) {
-            if (person.getIdentification().equals(identification)) {
-                return person;
+        try {
+        
+            for (PersonDto person : this.personList) {
+                if (person.getIdentification().equals(identification)) {
+                    return person;
+                }
             }
+            throw new PersonNotFoundException("Persona no encontrada");
+            
+        } catch(PersonNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new Exception("");
         }
-        return null;
+        
+        
     }
 
     /**
      * Método de tipo booleano que añade a una nueva persona a la lista
      * y la guarda en el archivo de texto
      * @param personDto el objeto de la nueva persona a agregar
-     * @return true si la persona se guardó, false si la identificación ya existe
+     * @throws co.edu.unicundi.exception.ConstraintException
+     * @throws co.edu.unicundi.exception.ConflictException
      */
-    public boolean savePerson(PersonDto personDto) {
+    public void savePerson(PersonDto personDto) throws ConstraintException, ConflictException, Exception {
 
-        for (PersonDto p: this.personList) {
-
-            if (p.getIdentification().equals(personDto.getIdentification())) {
-                return false;
+        try {
+            this.errores = this.error(personDto);
+            if (errores.size() > 0) {
+                throw new ConstraintException(errores);
             }
+        
+            for (PersonDto p: this.personList) {
+
+                if (p.getIdentification().equals(personDto.getIdentification())) {
+                    throw new ConflictException("Ya existe una persona con la misma identificación");
+                }
+            }
+            this.personList.add(personDto);
+            saveList();
+            
+        } catch (ConstraintException | ConflictException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new Exception("");
         }
-        this.personList.add(personDto);
-        saveList();
-        return true;
+        
     }
 
     /**
@@ -91,16 +125,26 @@ public class PersonService {
      * @return person la persona sise editó correctamente
      * p si existe una identificación con otra persona
      * null si la persona no existe
+     * @throws co.edu.unicundi.exception.ConstraintException
+     * @throws co.edu.unicundi.exception.PersonNotFoundException
+     * @throws co.edu.unicundi.exception.ConflictException
      */
-    public PersonDto updatePerson(String identification, PersonDto person) {
+    public PersonDto updatePerson(String identification, PersonDto person) 
+            throws ConstraintException, ConflictException, PersonNotFoundException, ConflictException, Exception {
 
-        for (int index = 0; index < this.personList.size(); index++) {
+        try {
+            this.errores = this.error(person);
+            if (errores.size() > 0) {
+                throw new ConstraintException(errores);
+            }
+            
+            for (int index = 0; index < this.personList.size(); index++) {
 
             if (this.personList.get(index).getIdentification().equals(identification)) {
 
                 for (PersonDto p: this.personList) {
                     if (p.getIdentification().equals(person.getIdentification()) && !person.getIdentification().equals(identification)) {
-                        return p;
+                        throw new ConflictException("Ya existe una persona con la misma identificación");
                     }
                 }
     
@@ -109,25 +153,37 @@ public class PersonService {
                 return person;
             }
         }
-        return null;
+        throw new PersonNotFoundException("Persona no encontrada");
+        } catch (ConstraintException | ConflictException | PersonNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new Exception("");
+        }
+        
     }
 
     /**
      * Método de tipo booleano que permite eliminar a una persona
      * @param identification la identificación de la persona a eliminar
-     * @return true si se eliminó la persona
-     * false si la persona no existe
+     * @throws co.edu.unicundi.exception.PersonNotFoundException
      */
-    public boolean deletePerson(String identification) {
+    public boolean deletePerson(String identification) throws PersonNotFoundException, Exception {
 
-        for (PersonDto p : this.personList) {
-            if (p.getIdentification().equals(identification)) {
-                this.personList.remove(p);
-                saveList();
-                return true;
+        try {
+            for (PersonDto p : this.personList) {
+                if (p.getIdentification().equals(identification)) {
+                    this.personList.remove(p);
+                    saveList();
+                    return true;
+                }
             }
+            throw new PersonNotFoundException("Persona no encontrada");
+        } catch (PersonNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new Exception("");
         }
-        return false;
+        
     }
 
     /**
@@ -194,11 +250,11 @@ public class PersonService {
      * @return la lista de errores
      */
     public HashMap<String, String> error(PersonDto person) {
-        HashMap<String, String> errores = new HashMap<>();
+        HashMap<String, String> errores2 = new HashMap<>();
         for (ConstraintViolation error : person.validate()) {
-            errores.put(error.getPropertyPath().toString(), error.getMessage());
+            errores2.put(error.getPropertyPath().toString(), error.getMessage());
         }
-        return errores;
+        return errores2;
     }
     
 }

@@ -26,7 +26,7 @@ public class MessageWrapper {
     /**
      * Variable de tipo String que almacena el mensaje que se enviará en la respuesta
      */
-    private String message;
+    private String error;
     
     /**
      * Variable de tipo String que almacena la fecha de la respuesta
@@ -48,13 +48,13 @@ public class MessageWrapper {
      * Constructor sobrecargado de la clase MessageWrapper
      * @param code
      * @param status
-     * @param message
+     * @param error
      * @param url 
      */
-    public MessageWrapper(int code, Response.Status status, String message, String url) {
+    public MessageWrapper(int code, Response.Status status, String error, String url) {
         this.code = code;
         this.status = status;
-        this.message = message;
+        this.error = error;
         this.date = new Date().toString();
         this.url = url;
     }
@@ -95,16 +95,16 @@ public class MessageWrapper {
      * Método que obtiene el mensaje de la envoltura
      * @return
      */
-    public String getMessage() {
-        return message;
+    public String getError() {
+        return error;
     }
 
     /**
      * Método que asigna el mensaje a la envoltura
-     * @param message 
+     * @param error 
      */
-    public void setMessage(String message) {
-        this.message = message;
+    public void setError(String error) {
+        this.error = error;
     }
 
     /**

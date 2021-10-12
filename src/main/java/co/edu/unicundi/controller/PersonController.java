@@ -1,10 +1,10 @@
 package co.edu.unicundi.controller;
 
 import co.edu.unicundi.dto.PersonDto;
-import co.edu.unicundi.message.HandlerWrapper;
-import co.edu.unicundi.message.MessageWrapper;
+import co.edu.unicundi.exception.ConflictException;
+import co.edu.unicundi.exception.ConstraintException;
+import co.edu.unicundi.exception.PersonNotFoundException;
 import co.edu.unicundi.service.PersonService;
-import java.util.HashMap;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.validation.constraints.Pattern;
@@ -32,13 +32,11 @@ import javax.ws.rs.core.Response;
 public class PersonController {
 
     PersonService objPersonList = new PersonService();
-    MessageWrapper msg = new MessageWrapper();
-    HandlerWrapper handler = new HandlerWrapper();
 
     @GET
     @Path("/obtener")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPersons() {
+    public Response getPersons() throws Exception {
 
         List<PersonDto> personList = objPersonList.getPersons();
 
@@ -53,38 +51,24 @@ public class PersonController {
     @Path("/obtenerPorId/{identification}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPersonsById(@PathParam("identification") @Size(min = 6, max = 12)
-                                    @Pattern(regexp = "^([0-9])*$") String id) {
+                                    @Pattern(regexp = "^([0-9])*$") String id) 
+            throws PersonNotFoundException, Exception {
 
         PersonDto person = objPersonList.getPersonByIdentification(id);
+         return Response.status(Response.Status.OK).entity(person).build();
 
-        if (person == null) {
-            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(),
-                    Response.Status.NOT_FOUND, "personas/obtenerPorId/{identification}");
-            return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
-        } else {
-            return Response.status(Response.Status.OK).entity(person).build();
-        }
     }
 
     @POST
     @Path("/insertar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addPerson(PersonDto person) {
+    public Response addPerson(PersonDto person) 
+            throws ConstraintException, ConflictException, Exception {
 
-        HashMap<String, String> errores = objPersonList.error(person);;
-        if (errores.size() > 0) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(errores).build();
-        }
-
-        if (objPersonList.savePerson(person)) {
-            return Response.status(Response.Status.CREATED).entity(person).build();
-        } else {
-            msg = handler.toResponse(Response.Status.CONFLICT.getStatusCode(),
-                    Response.Status.CONFLICT, "personas/insertar");
-            return Response.status(Response.Status.CONFLICT).entity(msg).build();
-        }
-
+        objPersonList.savePerson(person);
+        return Response.status(Response.Status.CREATED).entity(person).build();
+    
     }
 
     @PUT
@@ -92,43 +76,22 @@ public class PersonController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePerson(@PathParam("identification") @Size(min = 6, max = 12) 
-                                 @Pattern(regexp = "^([0-9])*$") String id, PersonDto editPerson) {
+                                 @Pattern(regexp = "^([0-9])*$") String id, PersonDto editPerson) 
+            throws ConstraintException, ConflictException, PersonNotFoundException, Exception {
 
-        HashMap<String, String> errores = objPersonList.error(editPerson);;
-        if (errores.size() > 0) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(errores).build();
-        }
-
-        PersonDto person = (PersonDto) objPersonList.updatePerson(id, editPerson);
-        if (person == null) {
-            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(),
-                    Response.Status.NOT_FOUND, "personas/editarPorId/{identification}");
-            return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
-        } else if (person != editPerson) {
-            msg = handler.toResponse(Response.Status.CONFLICT.getStatusCode(),
-                    Response.Status.CONFLICT, "personas/editarPorId/{identification}");
-            return Response.status(Response.Status.CONFLICT).entity(msg).build();
-        } else {
-            return Response.status(Response.Status.OK).entity(editPerson).build();
-        }
-
+        PersonDto person = objPersonList.updatePerson(id, editPerson);
+        return Response.status(Response.Status.OK).entity(editPerson).build();
+      
     }
 
     @DELETE
     @Path("/eliminarPorId/{identification}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePerson(@PathParam("identification") @Size(min = 6, max = 12)
-                                  @Pattern(regexp = "^([0-9])*$") String id) {
+                                  @Pattern(regexp = "^([0-9])*$") String id) throws PersonNotFoundException, Exception {
 
-        if (objPersonList.deletePerson(id)) {
-            msg = handler.toResponse(Response.Status.OK.getStatusCode(),
-                    Response.Status.OK, "/eliminarPorId/{identification}");
-            return Response.status(Response.Status.OK).entity(msg).build();
-        } else {
-            msg = handler.toResponse(Response.Status.NOT_FOUND.getStatusCode(),
-                    Response.Status.NOT_FOUND, "personas/eliminarPorId/{identification}");
-            return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
-        }
-
+        objPersonList.deletePerson(id);
+        return Response.status(Response.Status.NO_CONTENT).build();  
+        
     }
 }
