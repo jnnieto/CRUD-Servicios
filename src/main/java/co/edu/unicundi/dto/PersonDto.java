@@ -16,17 +16,18 @@ import javax.validation.constraints.Pattern;
  *
  * @author Tatiana Ramos Villanueva
  * @author Nicolás Nieto Cárdenas
- * @version 1.1.0
+ * @version 2.0.1
  * @since 1.0.0
  */
 public class PersonDto implements Serializable {
 
     /**
-     * Variable de tipo String que almacena el número de identificación de la persona
+     * Variable de tipo String que almacena el número de identificación de la
+     * persona
      */
     @NotNull(message = "La identificación no puede ser nula")
     @Size(min = 6, max = 12, message = "La identificación debe tener mínimo seis caracteres y máximo doce caracteres")
-    @Pattern(regexp="^([0-9])*$", message = "La identificación solo puede contener números")
+    @Pattern(regexp = "^([0-9])*$", message = "La identificación solo puede contener números")
     private String identification;
 
     /**
@@ -84,6 +85,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Constructor sobrecargado de la clase PersonDto
+     *
      * @param identification
      * @param name
      * @param lastName
@@ -106,6 +108,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que obtiene la identificación de la persona
+     *
      * @return
      */
     public String getIdentification() {
@@ -114,6 +117,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que asigna la identificación de la persona
+     *
      * @param identification
      */
     public void setIdentification(String identification) {
@@ -122,6 +126,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que obtiene el nombre de la persona
+     *
      * @return
      */
     public String getName() {
@@ -130,6 +135,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que asigna el nombre de la persona
+     *
      * @param name
      */
     public void setName(String name) {
@@ -138,6 +144,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que obtiene el apellido de la persona
+     *
      * @return
      */
     public String getLastName() {
@@ -146,6 +153,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que asigna el apellido de la persona
+     *
      * @param lastName
      */
     public void setLastName(String lastName) {
@@ -154,6 +162,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que obtiene la edad de la persona
+     *
      * @return
      */
     public String getAge() {
@@ -162,6 +171,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que asigna la edad de la persona
+     *
      * @param age
      */
     public void setAge(String age) {
@@ -170,6 +180,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que obtiene el correo electrónico de la persona
+     *
      * @return
      */
     public String getEmail() {
@@ -178,6 +189,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que asigna el correo electrónico de la persona
+     *
      * @param email
      */
     public void setEmail(String email) {
@@ -186,6 +198,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que obtiene el número de teléfono de la persona
+     *
      * @return
      */
     public String getPhoneNumber() {
@@ -194,6 +207,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que asigna el número de teléfono de la persona
+     *
      * @param phoneNumber
      */
     public void setPhoneNumber(String phoneNumber) {
@@ -202,6 +216,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que obtiene la ocupación de la persona
+     *
      * @return
      */
     public String getOcupation() {
@@ -210,6 +225,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que asigna la ocupación de la persona
+     *
      * @param ocupation
      */
     public void setOcupation(String ocupation) {
@@ -218,6 +234,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que obtiene la lista de certificaciones de la persona
+     *
      * @return
      */
     public List<String> getCertificationsList() {
@@ -226,6 +243,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que asigna una lista de certificaciones de la persona
+     *
      * @param certificationsList
      */
     public void setCertificationsList(List<String> certificationsList) {
@@ -234,6 +252,7 @@ public class PersonDto implements Serializable {
 
     /**
      * Método que valida los datos de la persona
+     *
      * @return la validación del objeto
      */
     public Set<ConstraintViolation<PersonDto>> validate() {

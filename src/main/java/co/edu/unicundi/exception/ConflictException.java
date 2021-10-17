@@ -1,18 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.edu.unicundi.exception;
 
 /**
+ * Excepcion personalizada que se dispara cuando se actualiza o crea una persona
+ * con una identificacion que ya existe
  *
- * @author nicon
+ * @author Tatiana Ramos Villanueva
+ * @author Nicolás Nieto Cárdenas
+ * @version 2.0.1
+ * @since 1.0.0
  */
 public class ConflictException extends Exception {
 
+    /**
+     * Constructor de la clase ConflictException
+     *
+     * @param conflict
+     */
     public ConflictException(String conflict) {
         super(conflict);
     }
-    
+
 }

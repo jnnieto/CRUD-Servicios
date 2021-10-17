@@ -1,18 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.edu.unicundi.exception;
 
 /**
+ * Excepcion personalizada que se dispara cuando se realiza la busqueda de una
+ * persona con una identificacion que no existe en la base de datos
  *
- * @author nicon
+ * @author Tatiana Ramos Villanueva
+ * @author Nicolás Nieto Cárdenas
+ * @version 2.0.1
+ * @since 1.0.0
  */
 public class PersonNotFoundException extends Exception {
-    
-    public PersonNotFoundException (String message) {
+
+    /**
+     * Constructor de la clase PersonNotFoundException
+     *
+     * @param message
+     */
+    public PersonNotFoundException(String message) {
         super(message);
     }
-    
+
 }

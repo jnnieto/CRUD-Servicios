@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Tatiana Ramos Villanueva
  * @author Nicolás Nieto Cárdenas
- * @version 1.1.0
+ * @version 2.0.1
  * @since 1.0.0
  */
 @Stateless
@@ -47,51 +47,55 @@ public class PersonController {
         }
     }
 
+    
     @GET
     @Path("/obtenerPorId/{identification}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPersonsById(@PathParam("identification") @Size(min = 6, max = 12)
-                                    @Pattern(regexp = "^([0-9])*$") String id) 
+            @Pattern(regexp = "^([0-9])*$") String id)
             throws PersonNotFoundException, Exception {
 
         PersonDto person = objPersonList.getPersonByIdentification(id);
-         return Response.status(Response.Status.OK).entity(person).build();
+        return Response.status(Response.Status.OK).entity(person).build();
 
     }
 
+    
     @POST
     @Path("/insertar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addPerson(PersonDto person) 
+    public Response addPerson(PersonDto person)
             throws ConstraintException, ConflictException, Exception {
 
         objPersonList.savePerson(person);
         return Response.status(Response.Status.CREATED).entity(person).build();
-    
+
     }
 
+    
     @PUT
     @Path("/editarPorId/{identification}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePerson(@PathParam("identification") @Size(min = 6, max = 12) 
-                                 @Pattern(regexp = "^([0-9])*$") String id, PersonDto editPerson) 
+    public Response updatePerson(@PathParam("identification") @Size(min = 6, max = 12)
+            @Pattern(regexp = "^([0-9])*$") String id, PersonDto editPerson)
             throws ConstraintException, ConflictException, PersonNotFoundException, Exception {
 
         PersonDto person = objPersonList.updatePerson(id, editPerson);
         return Response.status(Response.Status.OK).entity(editPerson).build();
-      
+
     }
 
+    
     @DELETE
     @Path("/eliminarPorId/{identification}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePerson(@PathParam("identification") @Size(min = 6, max = 12)
-                                  @Pattern(regexp = "^([0-9])*$") String id) throws PersonNotFoundException, Exception {
+            @Pattern(regexp = "^([0-9])*$") String id) throws PersonNotFoundException, Exception {
 
         objPersonList.deletePerson(id);
-        return Response.status(Response.Status.NO_CONTENT).build();  
-        
+        return Response.status(Response.Status.NO_CONTENT).build();
+
     }
 }

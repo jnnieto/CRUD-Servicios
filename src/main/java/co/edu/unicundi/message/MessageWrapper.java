@@ -4,35 +4,37 @@ import java.util.Date;
 import javax.ws.rs.core.Response;
 
 /**
- * Clase que se usa como una envoltura que maneja las respuestas de los servicios
+ * Clase que se usa como una envoltura para manejar las respuestas de los
+ * servicios
  *
  * @author Tatiana Ramos Villanueva
  * @author Nicolás Nieto Cárdenas
- * @version 1.1.0
+ * @version 2.0.1
  * @since 1.0.0
  */
 public class MessageWrapper {
-    
+
     /**
      * Variable de tipo entero que almacena el código de la respuesta
      */
     private int code;
-    
+
     /**
      * Variable de tipo Response.Status que almacena el estado de la respusta
      */
     private Response.Status status;
-    
+
     /**
-     * Variable de tipo String que almacena el mensaje que se enviará en la respuesta
+     * Variable de tipo String que almacena el mensaje que se enviará en la
+     * respuesta
      */
     private String error;
-    
+
     /**
      * Variable de tipo String que almacena la fecha de la respuesta
      */
     private String date;
-    
+
     /**
      * Variable de tipo String la URL del endpoint del servicio pedido
      */
@@ -46,10 +48,11 @@ public class MessageWrapper {
 
     /**
      * Constructor sobrecargado de la clase MessageWrapper
+     *
      * @param code
      * @param status
      * @param error
-     * @param url 
+     * @param url
      */
     public MessageWrapper(int code, Response.Status status, String error, String url) {
         this.code = code;
@@ -61,6 +64,7 @@ public class MessageWrapper {
 
     /**
      * Método que obtiene el código de la envoltura
+     *
      * @return
      */
     public int getCode() {
@@ -69,6 +73,7 @@ public class MessageWrapper {
 
     /**
      * Método que asigna el código a la envoltura
+     *
      * @param code
      */
     public void setCode(int code) {
@@ -77,6 +82,7 @@ public class MessageWrapper {
 
     /**
      * Método que obtiene el estado de la envoltura
+     *
      * @return
      */
     public Response.Status getStatus() {
@@ -85,7 +91,8 @@ public class MessageWrapper {
 
     /**
      * Método que asigna el estado a la envoltura
-     * @param status 
+     *
+     * @param status
      */
     public void setStatus(Response.Status status) {
         this.status = status;
@@ -93,6 +100,7 @@ public class MessageWrapper {
 
     /**
      * Método que obtiene el mensaje de la envoltura
+     *
      * @return
      */
     public String getError() {
@@ -101,7 +109,8 @@ public class MessageWrapper {
 
     /**
      * Método que asigna el mensaje a la envoltura
-     * @param error 
+     *
+     * @param error
      */
     public void setError(String error) {
         this.error = error;
@@ -109,6 +118,7 @@ public class MessageWrapper {
 
     /**
      * Método que obtiene la fecha de la envoltura
+     *
      * @return
      */
     public String getDate() {
@@ -117,6 +127,7 @@ public class MessageWrapper {
 
     /**
      * Método que asigna la fecha a la envoltura
+     *
      * @param date
      */
     public void setDate(String date) {
@@ -125,6 +136,7 @@ public class MessageWrapper {
 
     /**
      * Método que obtiene la URL de la envoltura
+     *
      * @return
      */
     public String getUrl() {
@@ -133,6 +145,7 @@ public class MessageWrapper {
 
     /**
      * Método que asigna la URL a la envoltura
+     *
      * @param url
      */
     public void setUrl(String url) {
