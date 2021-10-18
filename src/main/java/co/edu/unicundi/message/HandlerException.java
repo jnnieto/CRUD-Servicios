@@ -6,7 +6,12 @@ import co.edu.unicundi.exception.PersonNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.NotAllowedException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.NotSupportedException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -39,14 +44,17 @@ public class HandlerException implements ExceptionMapper<Exception> {
      */
     @Override
     public Response toResponse(Exception exception) {
-
+        //exception.printStackTrace();
         MessageWrapper msg;
+        
+        String endpoint = request.getRequestURI();
+        
+        Response.Status status = Response.Status.BAD_REQUEST;
 
-        if (exception instanceof PersonNotFoundException) {
-            msg = new MessageWrapper(Response.Status.NOT_FOUND.getStatusCode(), Response.Status.NOT_FOUND, exception.getMessage(), request.getRequestURI());
-            return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
-        } else if (exception instanceof ConstraintException) {
-
+        if (exception instanceof PersonNotFoundException || exception instanceof NotFoundException) {
+            status = Response.Status.NOT_FOUND;
+        } 
+        if (exception instanceof ConstraintException) {
             String value = exception.getMessage();
             value = StringUtils.substringBetween(value, "{", "}");
             String[] keyValuePairs = value.split(",");
@@ -58,14 +66,24 @@ public class HandlerException implements ExceptionMapper<Exception> {
             }
 
             return Response.status(Response.Status.BAD_REQUEST).entity(map).build();
-        } else if (exception instanceof ConflictException) {
-            msg = new MessageWrapper(Response.Status.CONFLICT.getStatusCode(), Response.Status.CONFLICT, exception.getMessage(), request.getRequestURI());
-            return Response.status(Response.Status.CONFLICT).entity(msg).build();
-        } else {
-            msg = new MessageWrapper(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), Response.Status.INTERNAL_SERVER_ERROR, "", request.getRequestURI());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).build();
+            
         }
-
+        if (exception instanceof ConflictException) {
+            status = Response.Status.CONFLICT;
+        } 
+        if (exception instanceof NotAllowedException) {
+            status = Response.Status.METHOD_NOT_ALLOWED;
+        } 
+        if (exception instanceof NotSupportedException) {
+            status = Response.Status.UNSUPPORTED_MEDIA_TYPE;
+        }
+        if (exception instanceof InternalServerErrorException) {
+            status = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+        
+        msg = new MessageWrapper(status.getStatusCode(), status, exception.getMessage(), endpoint);
+        return Response.status(status).type(MediaType.APPLICATION_JSON).entity(msg).build();
+        
     }
 
 }
